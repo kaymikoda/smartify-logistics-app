@@ -1,14 +1,15 @@
-import { openDb } from '../../../database';
+import { PrismaClient } from '@prisma/client';
 import fetch from 'node-fetch';
 
+const prisma = new PrismaClient();
+
 export async function GET(request) {
-  const db = await openDb();
-  const stores = await db.all('SELECT * FROM stores');
+  const stores = await prisma.store.findMany();
   const allOrders = [];
 
   for (const store of stores) {
-    const { store_name, api_key, password } = store;
-    const orders = await fetchOrders(api_key, password, store_name);
+    const { store_name, api_key, password, firstOrder } = store;
+    const orders = await fetchOrders(api_key, password, store_name, firstOrder);
     allOrders.push(...orders);
   }
 
@@ -17,7 +18,7 @@ export async function GET(request) {
   });
 }
 
-async function fetchOrders(apiKey, password, storeName) {
+async function fetchOrders(apiKey, password, storeName, firstOrder) {
   const today = new Date();
   const startOfMonth = new Date(today.getFullYear(), today.getMonth(), 1).toISOString();
   const endOfMonth = today.toISOString();
@@ -48,7 +49,7 @@ async function fetchOrders(apiKey, password, storeName) {
     const data = await response.json();
     if (data.orders.length === 0) break;
 
-    orders = orders.concat(data.orders);
+    orders = orders.concat(data.orders.filter(order => parseInt(order.id) >= firstOrder));
     hasNextPage = data.orders.length === 250;
 
     if (hasNextPage && response.headers.get('Link')) {
