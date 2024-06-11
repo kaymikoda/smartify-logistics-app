@@ -2,9 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
 
 @layer utilities {
   .text-balance {
     text-wrap: balance;
   }
 }
+
+body {
+  background-color: '#FAFAFA';
+  font-family: 'Poppins', sans-serif;
+}
+
+
+*,
+*::before,
+*::after {
+  box-sizing: inherit;
+  font-family: inherit; /* Vererbt die Schriftart an alle Elemente */
+}
+

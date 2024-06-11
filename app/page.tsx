@@ -1,10 +1,12 @@
-import React from 'react';
-import MyComponent from './components/MyComponent';
+import Link from 'next/link';
 
-const HomePage: React.FC = () => {
+const HomePage = () => {
   return (
     <div>
-      <MyComponent />
+      <h1>Welcome to the Smartify Logistics App</h1>
+      <Link href="/dashboard">
+        Go to Dashboard
+      </Link>
     </div>
   );
 };
