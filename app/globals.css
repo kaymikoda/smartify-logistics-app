@@ -24,3 +24,39 @@ body {
   font-family: inherit; /* Vererbt die Schriftart an alle Elemente */
 }
 
+/* globals.css */
+.app {
+  display: flex;
+}
+
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 200px;
+  background-color: #ffffff;
+  padding: 20px;
+  height: 100vh;
+  overflow-y: auto;
+  z-index: 1000; /* Ensure the sidebar is above other content */
+}
+
+.content {
+  margin-left: 200px; /* Adjust the margin to make space for the fixed sidebar */
+  flex: 1;
+  padding: 20px;
+}
+
+.sidebar ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  margin: 10px 0;
+}
+
+.sidebar ul li a {
+  text-decoration: none;
+  color: #333;
+}

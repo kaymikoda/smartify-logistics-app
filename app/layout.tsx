@@ -1,6 +1,11 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
+import Sidebar from '@/app/components/Sidebar';
+import { ThemeProvider } from '@mui/material/styles';
+import CssBaseline from '@mui/material/CssBaseline';
+import theme from '@/app/theme'; // Importiere das benutzerdefinierte Theme
 
 const poppins = Poppins({ subsets: ["latin"], weight: ["400", "700"] });
 
@@ -16,7 +21,17 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className={poppins.className}>{children}</body>
+      <body className={poppins.className} style={{ backgroundColor: '#ffffff', margin: 0, padding: 0 }}>
+        <ThemeProvider theme={theme}>
+          <CssBaseline />
+          <div className="app" style={{ display: 'flex' }}>
+            <Sidebar />
+            <div className="content" style={{ flexGrow: 1, marginLeft: '250px', padding: '20px' }}>
+              {children}
+            </div>
+          </div>
+        </ThemeProvider>
+      </body>
     </html>
   );
 }
