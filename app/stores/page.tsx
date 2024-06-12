@@ -1,31 +1,36 @@
-import React from 'react';
+// app/stores/page.tsx
+'use client';
+import React, { useEffect, useState } from 'react';
 import { Container, Select, MenuItem, Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Paper, Button } from '@mui/material';
 import axios from 'axios';
+import VisibilityIcon from '@mui/icons-material/Visibility';
 
 const Stores = () => {
-  const [data, setData] = React.useState([]);
-  const [dateRange, setDateRange] = React.useState('thisMonth');
+  const [data, setData] = useState<any[]>([]);
+  const [dateRange, setDateRange] = useState('thisMonth');
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  const fetchData = async (range) => {
-    const response = await axios.get(`/api/fetch-stores-data?dateRange=${range}`);
-    setData(response.data);
+  const fetchData = async (range: string) => {
+    try {
+      setLoading(true);
+      const response = await axios.get(`/api/fetch-stores-data?dateRange=${range}`);
+      setData(response.data);
+      setError(null);
+    } catch (err) {
+      setError('Failed to fetch data');
+      setData([]);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const handleDownload = async (storeId) => {
-    const response = await axios.get(`/api/scrape-and-export?storeId=${storeId}`, {
-      responseType: 'blob',
-    });
-    const url = window.URL.createObjectURL(new Blob([response.data]));
-    const link = document.createElement('a');
-    link.href = url;
-    link.setAttribute('download', 'export_transit.xlsx');
-    document.body.appendChild(link);
-    link.click();
-  };
-
-  React.useEffect(() => {
+  useEffect(() => {
     fetchData(dateRange);
   }, [dateRange]);
+
+  if (loading) return <div>Loading...</div>;
+  if (error) return <div>{error}</div>;
 
   return (
     <Container maxWidth="lg" style={{ backgroundColor: '#fafafa' }}>
@@ -61,15 +66,19 @@ const Stores = () => {
                 <TableCell>{store.transactionProvision}€</TableCell>
                 <TableCell>{store.totalProvision}€</TableCell>
                 <TableCell>
-                  <Button
-                    variant="contained"
-                    onClick={() => handleDownload(store.id)}
-                  >
+                  <Button variant="contained" startIcon={<VisibilityIcon />}>
                     Ansehen
                   </Button>
                 </TableCell>
               </TableRow>
             ))}
+            {data.length === 0 && (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  No data available
+                </TableCell>
+              </TableRow>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
