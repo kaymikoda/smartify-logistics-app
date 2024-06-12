@@ -1,4 +1,3 @@
-// app/dashboard/page.tsx
 'use client';
 
 import React, { useEffect, useState } from 'react';
@@ -12,6 +11,7 @@ const Dashboard = () => {
   const [dateRange, setDateRange] = useState('thisMonth');
 
   const fetchData = async (range: string) => {
+    console.log('fetchData called');
     const response = await axios.get(`/api/process-orders?dateRange=${range}`);
     setData(response.data);
   };
@@ -30,7 +30,7 @@ const Dashboard = () => {
 
   const totalOrders = data['Total Orders'].reduce((sum: number, value: number) => sum + value, 0);
   const totalItems = data['Total Items'].reduce((sum: number, value: number) => sum + value, 0);
-  const totalActiveContacts = data['Store Name'].length;
+  const totalActiveContacts = new Set(data['Store Name']).size;
   const fulfillmentProvision = data['Fulfillment Provision (€)'].reduce((sum: number, value: number) => sum + value, 0);
   const transactionProvision = data['Transaction Provision (€)'].reduce((sum: number, value: number) => sum + value, 0).toFixed(2);
   const totalProvision = data['Total Provision (€)'].reduce((sum: number, value: number) => sum + value, 0).toFixed(2);

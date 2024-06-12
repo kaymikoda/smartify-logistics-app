@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import ShopifyDataProcessor from '@/lib/shopifyProcessor';
 
 export async function GET(req: NextRequest) {
+  console.log("start route.ts");
   const processor = new ShopifyDataProcessor();
   const dateRange = req.nextUrl.searchParams.get('dateRange') || 'month'; // Standardwert 'month', wenn dateRange nicht gesetzt ist
   await processor.processOrders(dateRange);
